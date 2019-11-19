@@ -9,5 +9,5 @@
 ![flow](https://github.com/zhouwenmo/split/blob/master/split-flow.png)
 
 # 默认采用随机数分流算法，图示按照千分制级进行分流处理
-![algorithm2](https://github.com/zhouwenmo/split/blob/master/split-algorithm.png)
+![algorithm-mew](https://github.com/zhouwenmo/split/blob/master/split-algorithm.png)
 
