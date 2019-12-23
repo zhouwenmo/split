@@ -33,11 +33,33 @@ public abstract class AbstractExperSplitHandler {
         if (response.getParticipationSet() == null) {
             response.setParticipationSet(new HashSet<>());
         }
-
-        if (through(request, response, splitBo) || nextHandler == null) {
+        //流过当前管道
+        boolean through = through(request, response, splitBo);
+        if (through) {
+            //成功命中版本，进入上层通道处理
+            handler(response);
             return;
         }
+        if (nextHandler == null) {
+            //到达最后一个处理者返回
+            return;
+        }
+        //下一个管道处理者处理
         nextHandler.handler(request, response, splitBo);
+    }
+
+    /**
+     * 上层管道处理，只加入响应标记
+     *
+     * @param response 响应内容
+     */
+    private void handler(ExperimentMark response) {
+        //流过上层通道
+        through(response);
+        if (nextHandler != null) {
+            //存在下级流过下级通道
+            nextHandler.handler(response);
+        }
     }
 
     public AbstractExperSplitHandler getNextHandler() {
@@ -57,4 +79,11 @@ public abstract class AbstractExperSplitHandler {
      * @return 是否分流结束
      */
     protected abstract boolean through(ExperimentMark request, ExperimentMark response, ISpitBo splitBo);
+
+    /**
+     * 上层管道流过，只加入参与标记
+     *
+     * @param response 响应内容
+     */
+    protected abstract void through(ExperimentMark response);
 }

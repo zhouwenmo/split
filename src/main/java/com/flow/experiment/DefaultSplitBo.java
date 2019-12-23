@@ -58,7 +58,7 @@ public class DefaultSplitBo implements ISpitBo {
     private boolean splitByLimit(ExperimentMark request, ExperimentMark response, ExperBo experBo) {
         if (request != null && request.getParticipationSet().contains(experBo.getExperimentId())) {
             //携带参与标记
-            if (request.getExperiment() != null && request.getExperiment().getExperimentId().equals(experBo.getExperimentId())) {
+            if (checkExperimentMark(request.getExperiment(), experBo)) {
                 //携带此试验的试验标记，放入试验，分流结束
                 response.setExperiment(request.getExperiment());
                 return true;
@@ -83,6 +83,17 @@ public class DefaultSplitBo implements ISpitBo {
             this.random = randomCreate - experBo.getNum() * experBo.getFlow();
         }
         return false;
+    }
+
+    /**
+     * 检查试验参与标记是否符合规范命中
+     *
+     * @param experiment 试验标记
+     * @param experBo    试验对象
+     * @return 是否真的命中
+     */
+    private boolean checkExperimentMark(Experiment experiment, ExperBo experBo) {
+        return experiment != null && experiment.getExperimentId().equals(experBo.getExperimentId()) && experiment.getLayerId().equals(experBo.getLayerId()) && experiment.getType().equals(experBo.getType()) && experiment.getVersion() <= experBo.getNum();
     }
 
     /**

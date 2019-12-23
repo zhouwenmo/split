@@ -33,12 +33,17 @@ public class DefaultExperSplitHandler extends AbstractExperSplitHandler {
 
     @Override
     public boolean through(ExperimentMark request, ExperimentMark response, ISpitBo splitBo) {
+        through(response);
+        return splitBo.split(request, response, experBo);
+    }
+
+    @Override
+    protected void through(ExperimentMark response) {
         if (experBo == null) {
             //试验数据空，分流结束
-            return true;
+            return;
         }
         //添加参与标记
         response.getParticipationSet().add(experBo.getExperimentId());
-        return splitBo.split(request, response, experBo);
     }
 }
